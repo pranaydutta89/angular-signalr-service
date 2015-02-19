@@ -62,7 +62,7 @@
 
  Browser compatibility/tested with:
 
- 1) IE : 8+
- 2) Chrome : latest -1
- 3) firefox : latest -1
+ 1) IE : 8+ <br/>
+ 2) Chrome : latest -1 <br/>
+ 3) Firefox : latest -1 <br/>
 
