@@ -5,21 +5,21 @@
 
 
 
-angular.module('signalr', []).provider('signalrService', [function () {
+angular.module('signalr', []).provider('signalrService',function () {
 
     var configuration;
     this.config = function (config) {
         configuration = config;
     };
 
-    this.$get = ['$log', '$timeout', '$q', '$rootScope', function ($log, $timeout, $q, $rootScope) {
+    this.$get = ['$log', '$timeout', '$q',function ($log, $timeout, $q) {
         return new signalrService(configuration, $log, $timeout, $q);
     }];
 
-}])
+});
 
 
-function signalrService(configuration, $log, $timeout, $q, $rootScope) {
+function signalrService(configuration, $log, $timeout, $q) {
 
 
     if (!(configuration && configuration.register)) {
@@ -72,7 +72,6 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
             if (paramObject) {
 
                 hubProxy.invoke(serverFunction, paramObject).done(function (data) {
-
                     def.resolve(data);
                 }).fail(function (error) {
                     $log.error('SignalR error: ' + error)
@@ -91,19 +90,13 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
             $log.error('Failed to start signalR')
             def.reject();
         });
-
-
         return def.promise;
     }
 
 
     this.on = function (hubName, clientSubscribeFunction, func) {
-
-
         var hubProxy = signalRhubs.createHubProxy(hubName)
         hubProxy.on(clientSubscribeFunction, func);
-
-
     }
 
 }
