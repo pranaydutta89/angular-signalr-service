@@ -5,14 +5,14 @@
 
 
 
-angular.module('signalr', []).provider('signalrService',function () {
+angular.module('signalr', []).provider('signalrService', function () {
 
     var configuration;
     this.config = function (config) {
         configuration = config;
     };
 
-    this.$get = ['$log', '$timeout', '$q',function ($log, $timeout, $q) {
+    this.$get = ['$log', '$timeout', '$q', function ($log, $timeout, $q) {
         return new signalrService(configuration, $log, $timeout, $q);
     }];
 
@@ -72,7 +72,11 @@ function signalrService(configuration, $log, $timeout, $q) {
             if (paramObject) {
 
                 hubProxy.invoke(serverFunction, paramObject).done(function (data) {
-                    def.resolve(data);
+                    if(data)
+                        def.resolve(data);
+                    else
+                        def.resolve();
+
                 }).fail(function (error) {
                     $log.error('SignalR error: ' + error)
                     def.reject();
