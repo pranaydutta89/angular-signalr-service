@@ -34,7 +34,7 @@
 2) Use: invoke/on that's it,just like native signalR
 
 
-    app.controller('fooController',['signalrService','$rootScope','$scope',function(signalrService,$rootScope,$scope){
+    app.controller('fooController',['signalrService','$scope',function(signalrService,$scope){
 
     //call server function without any params
     signalrService.invoke('fooHub', 'fooFunction');
@@ -51,7 +51,7 @@
     signalrService.on('fooHub', 'fooFunctionClient', function (message) {
 
         $scope.message = message;
-        $rootScope.$apply();  //this step is important for triggering the digest cycle
+        $scope.$apply();  //this step is important for triggering the digest cycle
 
             });
 
