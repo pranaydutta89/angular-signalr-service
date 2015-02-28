@@ -46,7 +46,10 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
 
     signalRhubs.stateChanged(function (change) {
-        $rootScope.$emit('signalrStateChange', change.newState);
+        $timeout(function () {
+            $rootScope.$emit('signalrStateChange', change.newState);
+        }, 200);
+        
         currentState = change.newState;
 
     });
