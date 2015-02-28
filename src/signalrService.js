@@ -28,7 +28,7 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     }
 
     var signalRhubs = $.hubConnection();
-
+    var currentState;
 
     if (!signalRhubs) {
         $log.log('SignalR is not referenced.');
@@ -47,8 +47,10 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
     signalRhubs.stateChanged(function (change) {
         $rootScope.$emit('signalrStateChange', change.newState);
-        
+        currentState = change.newState;
+       
     });
+
 
 
     signalRhubs.connectionSlow(function () {
@@ -65,6 +67,11 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
             $log.warn('Signalr Connection dead.')
         }, 10000);
     });
+
+    this.getCurrentState = function () {
+        
+        return currentState;
+    }
 
 
     this.invoke = function (hubName, serverFunction, paramObject) {
