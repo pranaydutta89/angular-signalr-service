@@ -13,7 +13,7 @@ angular.module('signalr', []).provider('signalrService', function () {
     };
 
     this.$get = ['$log', '$timeout', '$q', '$rootScope', function ($log, $timeout, $q, $rootScope) {
-        return new signalrService(configuration, $log, $timeout, $q,$rootScope);
+        return new signalrService(configuration, $log, $timeout, $q, $rootScope);
     }];
 
 });
@@ -48,7 +48,7 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     signalRhubs.stateChanged(function (change) {
         $rootScope.$emit('signalrStateChange', change.newState);
         currentState = change.newState;
-       
+
     });
 
 
@@ -69,13 +69,15 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     });
 
     this.getCurrentState = function () {
-        
         return currentState;
     }
 
 
     this.invoke = function (hubName, serverFunction, paramObject) {
 
+        $timeout(function () {
+            $rootScope.$emit('signalrTransportState', 'sending');
+        },200);
         var def = $q.defer();
 
         var hubProxy = signalRhubs.createHubProxy(hubName)
@@ -85,22 +87,27 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
             if (paramObject) {
 
                 hubProxy.invoke(serverFunction, paramObject).done(function (data) {
-                    if(data)
-                        def.resolve(data);
-                    else
-                        def.resolve();
-
+                    
+                    def.resolve(data || null);
+                    emitRecieve();
+                    
                 }).fail(function (error) {
+                    
                     $log.error('SignalR error: ' + error)
                     def.reject();
+                    emitRecieve();
                 });
             }
             else {
                 hubProxy.invoke(serverFunction).done(function (data) {
-                    def.resolve(data);
+                    
+                    def.resolve(data || null);
+                    emitRecieve();
                 }).fail(function (error) {
+                    
                     $log.error('SignalR error: ' + error)
                     def.reject();
+                    emitRecieve();
                 });
             }
         }).fail(function () {
@@ -110,6 +117,11 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
         return def.promise;
     }
 
+    function emitRecieve() {
+        $timeout(function () {
+            $rootScope.$emit('signalrTransportState', 'received');
+        }, 400);
+    }
 
     this.on = function (hubName, clientSubscribeFunction, func) {
         var hubProxy = signalRhubs.createHubProxy(hubName)
