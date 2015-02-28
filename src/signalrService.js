@@ -12,14 +12,14 @@ angular.module('signalr', []).provider('signalrService', function () {
         configuration = config;
     };
 
-    this.$get = ['$log', '$timeout', '$q', function ($log, $timeout, $q) {
-        return new signalrService(configuration, $log, $timeout, $q);
+    this.$get = ['$log', '$timeout', '$q', '$rootScope', function ($log, $timeout, $q, $rootScope) {
+        return new signalrService(configuration, $log, $timeout, $q,$rootScope);
     }];
 
 });
 
 
-function signalrService(configuration, $log, $timeout, $q) {
+function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
 
     if (!(configuration && configuration.register)) {
@@ -42,6 +42,12 @@ function signalrService(configuration, $log, $timeout, $q) {
         var x = signalRhubs.createHubProxy(key.hub);
         x.on(key.method, function (data) {
         });
+    });
+
+
+    signalRhubs.stateChanged(function (change) {
+        $rootScope.$emit('signalrStateChange', change.newState);
+        
     });
 
 
