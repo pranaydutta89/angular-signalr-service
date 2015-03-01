@@ -3,7 +3,8 @@
  */
 
 
-
+(function(angular, undefined){
+    'use strict';
 
 angular.module('signalr', []).provider('signalrService', function () {
 
@@ -46,11 +47,11 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
 
     signalRhubs.stateChanged(function (change) {
+
+        currentState = change.newState;
         $timeout(function () {
             $rootScope.$emit('signalrStateChange', change.newState);
         }, 200);
-        
-        currentState = change.newState;
 
     });
 
@@ -132,3 +133,5 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     }
 
 }
+
+}(angular));
