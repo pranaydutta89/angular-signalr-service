@@ -57,12 +57,32 @@
 
        }]);
 
+3) Events:
+    
+    a) signalR state change : "signalrStateChange"
+          //example
+          $rootScope.$on('signalrStateChange', change.newState);
+          
+    b) signalR tranfering data: "signalrTransportState"
+          //example
+           $rootScope.$on('signalrTransportState', function(data){
+              
+              if(data == 'sending'){
+              //signalr is transferring to server
+              }
+              
+              if(data == 'received'){
+              // signalr completed its transferring
+              }
+           
+           });
 
 
 
  Browser compatibility/tested with:
 
  1) IE : 8+ <br/>
- 2) Chrome : latest -1 <br/>
+ 2) Chrome  : latest -1 <br/>
  3) Firefox : latest -1 <br/>
+ 4) Safari  : latest -1 <br/>
 
