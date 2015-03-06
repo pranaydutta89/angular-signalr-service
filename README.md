@@ -26,6 +26,7 @@
                     hub: 'fooHub',
                     method: 'fooFunction'
                 }],
+                transports:['webSockets'] //optional config same as signalr or will fallback to default transports
 
             });
 
