@@ -1,7 +1,3 @@
-/**
- * Created by prandutt on 2/19/2015.
- */
-
 
 (function(angular, undefined){
     'use strict';
@@ -24,7 +20,7 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
 
     if (!(configuration && configuration.register)) {
-        $log.log('Invalid config');
+        $log.error('Invalid config');
         return;
     }
 
@@ -32,7 +28,7 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     var currentState;
 
     if (!signalRhubs) {
-        $log.log('SignalR is not referenced.');
+        log('SignalR is not referenced.');
         return;
     }
 
@@ -58,17 +54,17 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
 
     signalRhubs.connectionSlow(function () {
-        $log.warn('We are currently experiencing difficulties with the connection.')
+        log('We are currently experiencing difficulties with the connection.')
     });
 
     signalRhubs.error(function (error) {
-        $log.error('SignalR error: ' + error)
+        log('SignalR error: ' + error)
     });
 
 
     $(signalRhubs).bind("onDisconnect", function (e, data) {
         $timeout(function () {
-            $log.warn('Signalr Connection dead.')
+            log('Signalr Connection dead.')
         }, 10000);
     });
 
@@ -86,7 +82,9 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
 
         var hubProxy = signalRhubs.createHubProxy(hubName)
 
-        signalRhubs.start().done(function () {
+
+
+        signalRhubs.start({ transport: configuration.transports || ['webSockets', 'serverSentEvents', 'longPolling', 'foreverFrame'] }).done(function () {
 
             if (paramObject) {
 
@@ -97,7 +95,7 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
                     
                 }).fail(function (error) {
                     
-                    $log.error('SignalR error: ' + error)
+                   log('SignalR error: ' + error)
                     def.reject();
                     emitRecieve();
                 });
@@ -109,13 +107,13 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
                     emitRecieve();
                 }).fail(function (error) {
                     
-                    $log.error('SignalR error: ' + error)
+                    log('SignalR error: ' + error)
                     def.reject();
                     emitRecieve();
                 });
             }
         }).fail(function () {
-            $log.error('Failed to start signalR')
+            log('Failed to start signalR');
             def.reject();
         });
         return def.promise;
@@ -130,6 +128,13 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
     this.on = function (hubName, clientSubscribeFunction, func) {
         var hubProxy = signalRhubs.createHubProxy(hubName)
         hubProxy.on(clientSubscribeFunction, func);
+    }
+
+
+    function log(messageLog) {
+        if (!!console && configuration.logging) {
+            $log.error(messageLog)
+        }
     }
 
 }
