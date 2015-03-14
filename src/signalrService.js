@@ -67,11 +67,6 @@ function signalrService(configuration, $log, $timeout, $q, $rootScope) {
         }, 400);
     });
 
-    $(signalRhubs).bind("onDisconnect", function (e, data) {
-        $timeout(function () {
-            log('Signalr Connection dead.')
-        }, 10000);
-    });
 
     this.getCurrentState = function () {
         return currentState;
