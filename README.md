@@ -1,5 +1,5 @@
 # Angularjs Signalr service
-AngularJS service wrapper for SingalR Hubs .Just do some config and ready to go.
+AngularJS wrapper for SingalR Hubs .Just do some config and ready to go.
 
 # Features
 
