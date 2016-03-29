@@ -16,7 +16,7 @@ AngularJS wrapper for SingalR Hubs .Just do some config and ready to go.
     var app =angular.module('foo',['signalr']); //include module
 
         //do some config
-        app.config(['signalrProiver',function(signalrProiver){
+        app.config(['signalrProvider',function(signalrProvider){
 
         //register one function of each hub just to warmup signalR
 
